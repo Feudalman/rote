@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Template. __ROTE_BIN__ is replaced by install.sh with the absolute path of the
+     built binary; copy the generated file into ~/Library/LaunchAgents/ to use it. -->
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -6,7 +8,7 @@
 	<string>com.arui.toast</string>
 	<key>ProgramArguments</key>
 	<array>
-		<string>/Users/zirui/projects/arui/rote/build/Toast.app/Contents/MacOS/toast</string>
+		<string>__ROTE_BIN__</string>
 		<string>serve</string>
 	</array>
 	<key>RunAtLoad</key>
@@ -14,8 +16,8 @@
 	<key>KeepAlive</key>
 	<true/>
 	<key>StandardErrorPath</key>
-	<string>/tmp/toast.err.log</string>
+	<string>/tmp/rote.err.log</string>
 	<key>StandardOutPath</key>
-	<string>/tmp/toast.out.log</string>
+	<string>/tmp/rote.out.log</string>
 </dict>
 </plist>

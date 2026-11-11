@@ -13,7 +13,7 @@ rote/
 ├── config.example.json  全部配置项 + 默认值
 ├── install.sh           编译 + 铺配置
 ├── smoke.sh             冒烟测试：弹三条并校验窗口真的出现了
-├── launchd/             登录自启（可选）
+├── launchd/             登录自启模板（install.sh 会生成填好路径的版本）
 └── integrations/        外部工具接入脚本，每个工具一个目录
     └── pi/              pi coding agent 的接入
 ```
@@ -31,7 +31,7 @@ rote/
 
 ### macOS 26 SDK
 
-`build.sh` 默认找 `~/Library/Developer/SDKs/MacOSX26.5.sdk`，找不到就退回 `xcrun --show-sdk-path`。
+`build.sh` 依次尝试：`TOAST_SDK` → `~/Library/Developer/SDKs/MacOSX26.5.sdk` → `xcrun --show-sdk-path`。
 
 这个 SDK 是**外观的门控**：只有链接 macOS 26 SDK 编译，`NSGlassEffectView`
 （Liquid Glass）才会生效；用旧 SDK 编译，系统只给兼容模式下的老式 vibrancy，
@@ -134,6 +134,6 @@ toast config                                 打印解析后的配置和 socket 
 - **没有历史**。要做就得上 SQLite + 查询界面。
 - **单渲染器**：只有「屏幕上某个位置的一张卡片」。多渲染器、规则路由、刘海适配都还没有。
 - **hover 效果关着**（`hover.enabled` 默认 false）。3D 倾斜代码还在，想开改配置即可。
-- **socket 没有鉴权**，任何本机进程都能弹通知。个人机器可接受。
+- **socket 没有鉴权**，同一用户下的任何进程都能弹通知。单用户机器可接受。
 - 标识符还叫 `toast`（bundle id `com.arui.toast`、配置目录 `~/.config/pi-toast`），
   仓库名是 rote；统一命名留到下一版，避免破坏已在运行的 socket 路径。
