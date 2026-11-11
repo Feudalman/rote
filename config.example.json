@@ -1,0 +1,91 @@
+{
+  "socket": "~/.pi-toast/toast.sock",
+  "appearance": {
+    "width": 340,
+    "marginTop": 14,
+    "marginRight": 14,
+    "marginLeft": 14,
+    "spacing": 8,
+    "cornerRadius": "capsule",
+    "paddingX": 16,
+    "paddingY": 16,
+    "accentStyle": "dot",
+    "accentWidth": 3,
+    "dotSize": 9,
+    "dotGap": 10,
+    "accentColor": {
+      "dark": "#4ADE80",
+      "light": "#16A34A"
+    },
+    "material": "hudWindow",
+    "background": {
+      "dark": "#0000000D",
+      "light": "#FFFFFF1A"
+    },
+    "borderColor": {
+      "dark": "#FFFFFF1A",
+      "light": "#00000014"
+    },
+    "borderWidth": 1,
+    "shadow": true,
+    "theme": "dark",
+    "titleSize": 13,
+    "titleWeight": "semibold",
+    "titleColor": {
+      "dark": "#FFFFFFF5",
+      "light": "#000000E6"
+    },
+    "bodySize": 12,
+    "bodyWeight": "regular",
+    "bodyColor": {
+      "dark": "#FFFFFF99",
+      "light": "#0000008C"
+    },
+    "titleBodyGap": 4,
+    "lineSpacing": 1,
+    "maxTitleLines": 2,
+    "maxBodyLines": 3,
+    "hoverMargin": 12,
+    "hover": {
+      "enabled": false,
+      "tilt": 9,
+      "scale": 1.03,
+      "lift": 2,
+      "duration": 0.12
+    },
+    "sheen": 0,
+    "accentInset": 6,
+    "accentAlign": "center"
+  },
+  "behavior": {
+    "duration": 10,
+    "fadeIn": 0.16,
+    "fadeOut": 0.22,
+    "maxVisible": 4,
+    "clickToDismiss": true,
+    "level": "floating",
+    "screen": "main",
+    "align": "center"
+  },
+  "content": {
+    "showTitle": true,
+    "showBody": true
+  },
+  "pi": {
+    "enabled": true,
+    "socket": "~/.pi-toast/toast.sock",
+    "minRunSeconds": 3,
+    "skipAborted": true,
+    "modes": [
+      "tui"
+    ],
+    "duration": 10,
+    "title": "Pi · {project}",
+    "body": "{summary}",
+    "warnOnFailure": false,
+    "summaryMode": "lastMessage",
+    "summaryMaxChars": 45,
+    "summaryModel": "",
+    "summaryTimeoutMs": 10000
+  }
+}
