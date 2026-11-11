@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Smoke test: render three toasts and check they actually reach the screen.
-# Exits non-zero on the first failed step, so it is usable in a pipeline.
+# 冒烟测试：弹三条，确认真的上屏
+# 任何一步失败立刻非 0 退出，可以在流水线里直接用
 set -euo pipefail
 cd "$(dirname "$0")"
 
@@ -25,8 +25,7 @@ send '{"title":"冒烟测试 2","body":"验证同屏堆叠：新的一条在最�
 sleep 0.3
 send '{"title":"冒烟测试 3","body":"三条都出现后，等自动消失，上方两条应依次贴回顶部","duration":12}'
 
-# Verify against the window server when possible. Quartz needs no special permission
-# for window geometry (only screen recording needs it), so this works unattended.
+# 用窗口服务器核对。取窗口几何不需要任何授权（只有录屏需要），所以能无人值守地跑
 if python3 -c "import Quartz" 2>/dev/null; then
 	sleep 0.6
 	count=$(python3 - <<'PY'
@@ -35,7 +34,7 @@ print(len([w for w in Quartz.CGWindowListCopyWindowInfo(Quartz.kCGWindowListOpti
            if "toast" in (w.get("kCGWindowOwnerName", "") or "").lower()]))
 PY
 )
-	# >= not ==: a second run within 12s still sees the previous toasts on screen.
+	# 用 >= 不用 ==：12 秒内跑第二遍还会看到上一轮的卡片
 	echo "smoke: on-screen toasts = $count (expected >= 3)"
 	[ "$count" -ge 3 ] || { echo "smoke: FAIL, only $count window(s) appeared" >&2; exit 1; }
 else

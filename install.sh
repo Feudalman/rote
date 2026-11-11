@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Build the app, install the config (if absent) and print what to do next.
-# The pi integration is deliberately separate: see integrations/pi/install.sh.
+# 编译、铺配置（没有才写）、打印下一步
+# pi 接入是独立脚本：见 integrations/pi/install.sh
 set -euo pipefail
 cd "$(dirname "$0")"
 
 ROOT="$(pwd)"
-CONFIG_DIR="$HOME/.config/pi-toast"
+CONFIG_DIR="$HOME/Library/Application Support/Toast"
+LEGACY_CONFIG="$HOME/.config/pi-toast/config.json"
 
 echo "==> building"
 ./build.sh
@@ -14,6 +15,8 @@ echo "==> config"
 mkdir -p "$CONFIG_DIR"
 if [ -f "$CONFIG_DIR/config.json" ]; then
 	echo "    $CONFIG_DIR/config.json already exists, left untouched"
+elif [ -f "$LEGACY_CONFIG" ]; then
+	echo "    reusing $LEGACY_CONFIG (second in the search order)"
 else
 	cp config.example.json "$CONFIG_DIR/config.json"
 	echo "    wrote $CONFIG_DIR/config.json"

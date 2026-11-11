@@ -1,14 +1,21 @@
 import { createConnection } from "node:net";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { homedir } from "node:os";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
 
-// pi -> toast bridge.
-// On every settled run, push one line of JSON to the toast server's unix socket.
-// Everything is configurable from the `pi` section of ~/.config/pi-toast/config.json.
+// pi → toast 桥：每次会话 settle 后往 socket 写一行 JSON
+// `pi` 段与 server 读同一个配置，走同一条搜索链
 
-const CONFIG_PATH = process.env.PI_TOAST_CONFIG ?? join(homedir(), ".config/pi-toast/config.json");
+const CONFIG_CANDIDATES = [
+	join(homedir(), "Library/Application Support/Toast/config.json"),
+	join(homedir(), ".config/pi-toast/config.json"),
+	"/Library/Application Support/Toast/config.json",
+];
+
+const CONFIG_PATH = process.env.PI_TOAST_CONFIG
+	? process.env.PI_TOAST_CONFIG
+	: CONFIG_CANDIDATES.find((p) => existsSync(p)) ?? CONFIG_CANDIDATES[0];
 
 type PiConfig = {
 	enabled: boolean;
@@ -62,8 +69,7 @@ function loadConfig(): PiConfig {
 	};
 }
 
-// Unknown placeholders are dropped rather than shown: a stale extension or a typo in
-// the template must never put literal "{summary}" on screen.
+// 未知占位符直接丢掉：模板写错时不能把字面的 {summary} 印到屏幕上
 function render(template: string, vars: Record<string, string>): string {
 	const unknown: string[] = [];
 	const out = template.replace(/\{(\w+)\}/g, (match, key: string) => {
@@ -77,7 +83,7 @@ function render(template: string, vars: Record<string, string>): string {
 	return out.replace(/[ \t]{2,}/g, " ").trim();
 }
 
-// MARK: - summary
+// MARK: - 摘要
 
 type Entry = {
 	type?: string;
@@ -107,7 +113,7 @@ function toolNames(content: unknown): string[] {
 	return names;
 }
 
-// One-line, no markdown, no leading bullets: this ends up in a 340pt toast.
+// 压成一行、去 markdown、去前导符号：这些字最终只占 340pt 的卡片
 function tidy(text: string, maxChars: number): string {
 	let out = text
 		.replace(/```[\s\S]*?```/g, " ")
@@ -137,8 +143,8 @@ function lastAssistantText(entries: Entry[]): string {
 	return "";
 }
 
-// Digest handed to the summarising model: what the user asked, what the agent said,
-// and which tools it touched. Bounded so a long session cannot blow up the prompt.
+// 给模型的摘要素材：用户问了什么、agent 答了什么、碰过哪些工具
+// 要有上限，长会话不能把 prompt 撑爆
 function buildDigest(entries: Entry[], budget = 6000): string {
 	const lines: string[] = [];
 	for (const entry of entries) {
@@ -200,13 +206,13 @@ async function buildSummary(ctx: ExtensionContext, config: PiConfig): Promise<st
 			const tidyGenerated = tidy(generated, config.summaryMaxChars);
 			if (tidyGenerated) return tidyGenerated;
 		} catch {
-			// fall through to the free option
+			// 回退到不花钱的方案
 		}
 	}
 	return tidy(lastAssistantText(entries), config.summaryMaxChars);
 }
 
-// MARK: - transport
+// MARK: - 传输
 
 function send(socketPath: string, payload: unknown): Promise<void> {
 	return new Promise((resolve, reject) => {

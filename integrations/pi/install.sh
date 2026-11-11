@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Install the pi integration: drop the extension into pi's auto-discovery directory
-# and make sure the `pi` section of the toast config exists.
+# 装 pi 接入：把扩展丢进 pi 的自动发现目录，再确保 toast 配置里有 `pi` 段
 #
 #   ./install.sh            install / refresh the extension
 #   ./install.sh --test     ...and fire a test toast
@@ -10,8 +9,15 @@ set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 EXT_DIR="$HOME/.pi/agent/extensions"
 EXT_FILE="$EXT_DIR/toast-notify.ts"
-CONFIG_DIR="$HOME/.config/pi-toast"
-CONFIG_FILE="$CONFIG_DIR/config.json"
+CONFIG_DIR="$HOME/Library/Application Support/Toast"
+LEGACY_CONFIG="$HOME/.config/pi-toast/config.json"
+
+# 与 toast 的搜索顺序保持一致：已有旧位置的就沿用它，都没有才在首选位置新建
+if [ ! -f "$CONFIG_DIR/config.json" ] && [ -f "$LEGACY_CONFIG" ]; then
+	CONFIG_FILE="$LEGACY_CONFIG"
+else
+	CONFIG_FILE="$CONFIG_DIR/config.json"
+fi
 
 remove() {
 	rm -f "$EXT_FILE"

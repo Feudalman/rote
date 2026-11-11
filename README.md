@@ -7,7 +7,15 @@ macOS 上的浮层通知，第一版（v1 demo）。
 
 ```
 rote/
-├── Sources/main.m       全部实现（Objective-C + Cocoa，单文件）
+├── Sources/              Objective-C + Cocoa，按职责分文件
+│   ├── main.m            入口，只做子命令分发
+│   ├── CLI.{h,m}         参数解析 + serve / send / preview / config
+│   ├── Config.{h,m}      配置模型、默认值、路径搜索链、颜色解析
+│   ├── CardView.{h,m}    卡片绘制：材质、强调件、排版、悬停
+│   ├── ToastItem.{h,m}   单条通知的面板、动画、停留计时
+│   ├── ToastCenter.{h,m} 队列、屏幕选择、堆叠布局
+│   ├── Socket.{h,m}      unix socket 收发
+│   └── Payload.{h,m}     一行 JSON → 通知内容
 ├── Info.plist           打包成 Toast.app 的 bundle 描述
 ├── build.sh             编译（需要 macOS 26 SDK，见下）
 ├── config.example.json  全部配置项 + 默认值
@@ -21,13 +29,31 @@ rote/
 ## 安装
 
 ```bash
-./install.sh                          # 编译 + 写 ~/.config/pi-toast/config.json
+./install.sh                          # 编译 + 写 ~/Library/Application Support/Toast/config.json
 ./build/Toast.app/Contents/MacOS/toast serve &
 ./smoke.sh                            # 冒烟测试：弹三条并校验
 ```
 
-没有设置页面，一切走 `~/.config/pi-toast/config.json`，逐项 fallback 到内置默认值。
-改完配置要重启 server 才生效。
+没有设置页面，一切走配置文件，逐项 fallback 到内置默认值，改完要重启 server 才生效。
+
+### 配置文件位置
+
+按顺序找，**第一个存在的整个文件生效**（不做合并）：
+
+| 顺位 | 路径 | 说明 |
+|---|---|---|
+| — | `--config PATH` | 显式指定；缺了也只用默认值，不回落到下面的路径 |
+| — | `$PI_TOAST_CONFIG` | 环境变量，同上 |
+| 1 | `~/Library/Application Support/Toast/config.json` | 用户级主位置，`install.sh` 写这里 |
+| 2 | `~/.config/pi-toast/config.json` | 旧位置，保留兼容 |
+| 3 | `/Library/Application Support/Toast/config.json` | 全机默认，可选 |
+
+一个都不存在时全部用内置默认值，`toast config` 会把找过的路径列出来：
+
+```bash
+toast config                            # 命中的文件、socket 状态、关键参数
+toast config --config /tmp/try.json     # 试一份候选配置，不动现场的
+```
 
 ### macOS 26 SDK
 
@@ -99,7 +125,7 @@ echo '{...}' | toast send                    从 stdin 读 JSON
 toast send ... --screen 2                    发到指定屏
 toast preview --title T --body B --out x.png 用同一套绘制代码离屏渲染成 PNG
 toast preview ... --theme light --bg "#F5F5F7"  看浅色模式
-toast config                                 打印解析后的配置和 socket 状态
+toast config                                 打印命中的配置文件、socket 状态、关键参数
 ```
 
 `preview` 是调样式用的：截图权限没开时也能看到卡片长什么样。它会强制关掉 `material`
@@ -135,5 +161,5 @@ toast config                                 打印解析后的配置和 socket 
 - **单渲染器**：只有「屏幕上某个位置的一张卡片」。多渲染器、规则路由、刘海适配都还没有。
 - **hover 效果关着**（`hover.enabled` 默认 false）。3D 倾斜代码还在，想开改配置即可。
 - **socket 没有鉴权**，同一用户下的任何进程都能弹通知。单用户机器可接受。
-- 标识符还叫 `toast`（bundle id `dev.rote.toast`、配置目录 `~/.config/pi-toast`），
+- 标识符还叫 `toast`（bundle id `dev.rote.toast`、配置目录 `~/Library/Application Support/Toast`），
   仓库名是 rote；统一命名留到下一版，避免破坏已在运行的 socket 路径。

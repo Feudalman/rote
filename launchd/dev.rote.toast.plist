@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Template. __ROTE_BIN__ is replaced by install.sh with the absolute path of the
-     built binary; copy the generated file into ~/Library/LaunchAgents/ to use it. -->
+<!-- 模板：__ROTE_BIN__ 由 install.sh 替换成二进制绝对路径
+     生成的 plist 拷到 ~/Library/LaunchAgents/ 后 bootstrap -->
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
