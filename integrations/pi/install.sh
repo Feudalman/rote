@@ -31,7 +31,7 @@ mkdir -p "$CONFIG_DIR"
 if [ ! -f "$CONFIG_FILE" ]; then
 	cp "$HERE/../../config.example.json" "$CONFIG_FILE"
 	echo "    created from config.example.json"
-else
+elif command -v python3 >/dev/null 2>&1; then
 	python3 - "$CONFIG_FILE" <<'PY'
 import json, sys, pathlib
 path = pathlib.Path(sys.argv[1])
@@ -58,20 +58,16 @@ for k, v in defaults.items():
 path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n")
 print(f"    merged pi section ({len(added)} new key(s))")
 PY
+else
+	echo "    python3 not found, config left alone. Add this section manually if missing:"
+	echo '    "pi": { "enabled": true, "body": "{summary}", "summaryMode": "lastMessage" }'
 fi
 
 if [ "${1:-}" = "--test" ]; then
-	SOCK=$(python3 -c "import json,pathlib,os;d=json.loads(pathlib.Path('$CONFIG_FILE').read_text());print(os.path.expanduser(d.get('pi',{}).get('socket','~/.pi-toast/toast.sock')))")
-	echo "==> test toast -> $SOCK"
-	python3 - "$SOCK" <<'PY'
-import json, socket, sys
-sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-sock.settimeout(2)
-sock.connect(sys.argv[1])
-sock.sendall((json.dumps({"source": "pi", "title": "Pi · 集成测试", "body": "扩展已安装，/reload 后即可生效", "duration": 8}) + "\n").encode())
-sock.close()
-print("    sent (if nothing appeared, the toast server is not running)")
-PY
+	echo "==> test toast"
+	"$HERE/../../build/toast" send --json \
+		'{"source":"pi","title":"Pi · 集成测试","body":"扩展已安装，/reload 后即可生效","duration":8}' \
+		|| echo "    (server not running? start it with ../../install.sh)"
 fi
 
 cat <<EOF

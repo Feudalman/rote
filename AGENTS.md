@@ -99,8 +99,8 @@ settle 耗时、payload、未知占位符、发送结果。
 
 ## 命名
 
-仓库叫 `rote`，但运行时标识符是 `toast`：bundle id `com.arui.toast`、配置目录
-`~/.config/pi-toast`、socket `~/.pi-toast/toast.sock`、launchd 标签 `com.arui.toast`。
+仓库叫 `rote`，但运行时标识符是 `toast`：bundle id `dev.rote.toast`、配置目录
+`~/.config/pi-toast`、socket `~/.pi-toast/toast.sock`、launchd 标签 `dev.rote.toast`。
 改名会破坏已部署的 socket 路径、配置目录和用户已装的扩展，因此要改就整体迁移并写迁移脚本，
 不要只改一半。
 

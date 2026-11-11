@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>toast</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.arui.toast</string>
+	<string>dev.rote.toast</string>
 	<key>CFBundleName</key>
 	<string>Toast</string>
 	<key>CFBundleDisplayName</key>

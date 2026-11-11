@@ -135,5 +135,5 @@ toast config                                 打印解析后的配置和 socket 
 - **单渲染器**：只有「屏幕上某个位置的一张卡片」。多渲染器、规则路由、刘海适配都还没有。
 - **hover 效果关着**（`hover.enabled` 默认 false）。3D 倾斜代码还在，想开改配置即可。
 - **socket 没有鉴权**，同一用户下的任何进程都能弹通知。单用户机器可接受。
-- 标识符还叫 `toast`（bundle id `com.arui.toast`、配置目录 `~/.config/pi-toast`），
+- 标识符还叫 `toast`（bundle id `dev.rote.toast`、配置目录 `~/.config/pi-toast`），
   仓库名是 rote；统一命名留到下一版，避免破坏已在运行的 socket 路径。

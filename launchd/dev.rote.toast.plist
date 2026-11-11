@@ -5,7 +5,7 @@
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.arui.toast</string>
+	<string>dev.rote.toast</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>__ROTE_BIN__</string>

@@ -21,8 +21,8 @@ fi
 
 echo "==> launchd template"
 sed "s|__ROTE_BIN__|$ROOT/build/Toast.app/Contents/MacOS/toast|" \
-	launchd/com.arui.toast.plist > build/com.arui.toast.plist
-echo "    wrote build/com.arui.toast.plist"
+	launchd/dev.rote.toast.plist > build/dev.rote.toast.plist
+echo "    wrote build/dev.rote.toast.plist"
 
 cat <<EOF
 
@@ -33,9 +33,9 @@ installed.
   inspect config     : $ROOT/build/toast config
   preview a card     : $ROOT/build/toast preview --title T --body B --out /tmp/x.png
 
-  start on login     : cp build/com.arui.toast.plist ~/Library/LaunchAgents/
-                       launchctl bootstrap gui/\$(id -u) ~/Library/LaunchAgents/com.arui.toast.plist
-                       launchctl bootout   gui/\$(id -u)/com.arui.toast    # to remove
+  start on login     : cp build/dev.rote.toast.plist ~/Library/LaunchAgents/
+                       launchctl bootstrap gui/\$(id -u) ~/Library/LaunchAgents/dev.rote.toast.plist
+                       launchctl bootout   gui/\$(id -u)/dev.rote.toast    # to remove
 
   pi integration     : ./integrations/pi/install.sh --test
 EOF
