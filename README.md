@@ -12,7 +12,7 @@ rote/
 ├── build.sh             编译（需要 macOS 26 SDK，见下）
 ├── config.example.json  全部配置项 + 默认值
 ├── install.sh           编译 + 铺配置
-├── demo.sh              连弹三条看看效果
+├── smoke.sh             冒烟测试：弹三条并校验窗口真的出现了
 ├── launchd/             登录自启（可选）
 └── integrations/        外部工具接入脚本，每个工具一个目录
     └── pi/              pi coding agent 的接入
@@ -23,7 +23,7 @@ rote/
 ```bash
 ./install.sh                          # 编译 + 写 ~/.config/pi-toast/config.json
 ./build/Toast.app/Contents/MacOS/toast serve &
-./demo.sh                             # 弹三条
+./smoke.sh                            # 冒烟测试：弹三条并校验
 ```
 
 没有设置页面，一切走 `~/.config/pi-toast/config.json`，逐项 fallback 到内置默认值。
